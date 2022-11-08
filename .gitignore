@@ -1,4 +1,2 @@
-/out.txt
-/table.txt
-/timeline.txt
-main.exe
+*.txt
+*.exe
