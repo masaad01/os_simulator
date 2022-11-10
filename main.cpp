@@ -13,7 +13,7 @@ void randomProcessGenerator(ofstream &fout, int processCount, int maxArrivalTime
     for(int i = 0; i < processCount; i++){
         int arrivalTime = (rand() % maxArrivalTime) + 1;
         int processingTime = (rand() % maxProcessingTime) + 1;
-        fout << char('A' + i) << " " << arrivalTime << " " << processingTime;
+        fout << "p" << i << " " << arrivalTime << " " << processingTime;
         if(i != processCount - 1)
             fout << endl;
     }
@@ -29,7 +29,7 @@ int main()
     
     {
         cout << "Do you want to generate random processes? (y/n): ";
-        char c;
+        char c = 'n';
         cin >> c;
         if(c == 'y'){
             int processCount = 0;
@@ -89,10 +89,11 @@ int main()
     fout << output;
     fout.close();
 
-    
-    fout.open("timeline.txt");
-    simulator.drawTimeLine(fout);
-    fout.close();
+    if(simulator.getProcessesTimeline().size() < 200){
+        fout.open("timeline.txt");
+        simulator.drawTimeLine(fout);
+        fout.close();
+    }
 
 
     fout.open("table.txt");

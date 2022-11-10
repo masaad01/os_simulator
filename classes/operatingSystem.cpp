@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <list>
 
@@ -6,12 +7,19 @@
 using namespace std;
 
 
-OperatingSystem::OperatingSystem(int time){
+OperatingSystem::OperatingSystem(int &time){
     scheduler = Scheduler();
-    this->time = time;
+    this->systemTimerPtr = &time;
+    nullOS = false;
+}
+OperatingSystem::OperatingSystem(){
+    nullOS = true;
 }
 bool OperatingSystem::fork(Process ps)
 {
+    if(nullOS){
+        throw invalid_argument("OperatingSystem is not initialized");
+    }
     try
     {
         processHistory.push_back(ps);
@@ -25,11 +33,18 @@ bool OperatingSystem::fork(Process ps)
     return true;
 }
 pair<int, Process> OperatingSystem::run(){
-    auto res = scheduler.dispatch(time);
-    time = res.first;
-    return res;
+    if(nullOS){
+        throw invalid_argument("OperatingSystem is not initialized");
+    }
+    if(!hasReadyProcess()){
+        return make_pair(*systemTimerPtr, Process());
+    }
+    return scheduler.dispatch(*systemTimerPtr);
 }
 Process OperatingSystem::getProcess(string pid){
+    if(nullOS){
+        throw invalid_argument("OperatingSystem is not initialized");
+    }
     Process ps;
     for(auto &it : processHistory){
         if(it.getPid() == pid){
@@ -40,11 +55,14 @@ Process OperatingSystem::getProcess(string pid){
     return ps;
 }
 bool OperatingSystem::hasReadyProcess(){
+    if(nullOS){
+        throw invalid_argument("OperatingSystem is not initialized");
+    }
     return scheduler.hasReadyProcess();
 }
-void OperatingSystem::setTimer(int time){
-    this->time = time;
-}
 list<Process> OperatingSystem::getProcessHistory(){
+    if(nullOS){
+        throw invalid_argument("OperatingSystem is not initialized");
+    }
     return processHistory;
 }

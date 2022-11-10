@@ -76,11 +76,19 @@ void Simulator::run(){
 
     Process::sortByArrivaltime(inputProcesses);
     
-    os.setTimer(inputProcesses[0].getArrivalTime());
     time = inputProcesses[0].getArrivalTime();
 
     while(!inputProcesses.empty() || os.hasReadyProcess()){
-        forkNewProcess();
+        if(!inputProcesses.empty()){
+            forkNewProcess();
+        }
+        else{
+            time += 0;
+        }
+        if(!os.hasReadyProcess()){
+            time++;
+            continue;
+        }
         pair<int, Process> res = os.run();
         time = res.first;
         Process ps = res.second;
@@ -95,49 +103,65 @@ void Simulator::drawTimeLine(ofstream &fout){
     int unit = 5;
 
     for(auto &ps : os.getProcessHistory()){
-        string shift = drawRectangle(ps.getArrivalTime() * unit, 3, ' ');
+        int arrivalTime = ps.getArrivalTime();
+        if(arrivalTime > 500)
+            arrivalTime /= 100;
+        string shift = drawRectangle(arrivalTime * unit, 3, ' ');
         string psRect = drawProcessRunning(ps, unit, true);
-        fout << joinMultiLineString(shift, psRect);
+        string res = joinMultiLineString(shift, psRect);
+        if(res.length() > 10000)
+            cout << res.length() << endl << shift.length() << endl << psRect.length() << endl;
+        fout << res;
     }
     fout << endl;
 
-    vector<string> startMark;
-    startMark.push_back(drawRectangle(1, 3, ' '));
-    startMark.push_back(drawRectangle(1, 3, '|'));
-    startMark.push_back(drawRectangle(1, 3, ' '));
-
-    string runningPS = joinMultiLineString(startMark);
-    string timeline = " 0 ";
+    string runningPS = drawRectangle(1, 3, '|');
+    string timeline = "0";
     int time = 0;
+    int prevTimeSeperator = 0;
     for(auto &ps : processesTimeline){
         vector<string> psRect;
+        int runTime = ps.getProcessingTime() - ps.getRemainingTime();
+        int runTimePadding = runTime * unit;
+
+        // original timeline (before ps)
         psRect.push_back(runningPS);
+
+        // shift to position (space padding)
         if(time < ps.getArrivalTime()){
             psRect.push_back(drawRectangle((ps.getArrivalTime() - time) * unit, 3, ' '));
             timeline += string((ps.getArrivalTime() - time) * unit, ' ');
             time = ps.getArrivalTime();
         }
+        
+        // draw start timeline seperator
+        if(time != prevTimeSeperator){
+            psRect.push_back(drawRectangle(1, 3, '|'));
+            timeline += to_string(time);
+            runTimePadding -= to_string(time).length() - 1;
+        }
 
+        // draw process running
         psRect.push_back(drawProcessRunning(ps, unit));
-        psRect.push_back(drawRectangle(1, 3, ' '));
+        time += runTime;
+        runTimePadding -= to_string(time).length() - 1;
+        timeline += string(runTimePadding, ' ');
+
+        // draw end timeline seperator
         psRect.push_back(drawRectangle(1, 3, '|'));
-        psRect.push_back(drawRectangle(1, 3, ' '));
+        timeline += to_string(time);
+        prevTimeSeperator = time;
 
         runningPS = joinMultiLineString(psRect);
 
-
-        int runTime = ps.getProcessingTime() - ps.getRemainingTime();
-
-        time += runTime;
-
-        string timeStr = "";
-        timeStr += (time < 100)? " ": "";
-        timeStr += to_string(time);
-        timeStr += (time < 10)? " ": "";
-
-        timeline += string(runTime * unit, ' ') + timeStr;
-        
+        if(runningPS.length() > 2000){
+            fout << runningPS;
+            fout << timeline << endl;
+            runningPS = "";
+            timeline = "";
+        }
     }
+
     fout << runningPS;
     fout << timeline;
 }
@@ -156,13 +180,13 @@ string Simulator::drawProcessRunning(Process ps, int size, bool addInfo){
     double namePadding = (rt * size - name.length()) / 2.0;
     
 
-    if(namePadding < 0){
-        name = name.substr(0, rt * size);
+    if(namePadding < 1){
+        name = name[0] + string(rt * size - 2, '.') + name[name.length() - 1];
         namePadding = 0;
         addInfo = false;
     }
     else if(addInfo){
-        int l = (at.length() + pt.length())/2.0;
+        double l = (at.length() + pt.length())/2.0;
         if(l >= namePadding){
             namePadding -= 1;
             addInfo = false;
@@ -195,9 +219,20 @@ void Simulator::drawProcessTable(ofstream &fout){
     table.addColumnHeader("Response");
     table.addColumnHeader("Turnaround");
     table.addColumnHeader("Delay");
+    table.addColumnHeader("Start");
+    table.addColumnHeader("Finish");
+
+    long long totalResponse = 0;
+    long long totalTurnaround = 0;
+    long long totalDelay = 0;
+
+    
 
     for(auto &ps : os.getProcessHistory()){
         vector<string> row;
+        totalResponse += ps.getResponseTime();
+        totalTurnaround += ps.getTurnaroundTime();
+        totalDelay += ps.getDelayTime();
         row.push_back(ps.getPid());
         row.push_back(to_string(ps.getArrivalTime()));
         row.push_back(to_string(ps.getProcessingTime()));
@@ -205,7 +240,42 @@ void Simulator::drawProcessTable(ofstream &fout){
         row.push_back(to_string(ps.getResponseTime()));
         row.push_back(to_string(ps.getTurnaroundTime()));
         row.push_back(to_string(ps.getDelayTime()));
+        row.push_back(to_string(ps.getArrivalTime() + ps.getResponseTime()));
+        row.push_back(to_string(ps.getFinishTime()));
         table.addRow(row);
     }
+    {
+        vector<string> row;
+        row.push_back("Total");
+        row.push_back("");
+        row.push_back("");
+        row.push_back("");
+        row.push_back(to_string(totalResponse));
+        row.push_back(to_string(totalTurnaround));
+        row.push_back(to_string(totalDelay));
+        row.push_back("");
+        row.push_back("");
+        table.addRow(row);
+    }
+    {
+        vector<string> row;
+        row.push_back("Average");
+        row.push_back("");
+        row.push_back("");
+        row.push_back("");
+        string tmp = to_string((double)totalResponse / os.getProcessHistory().size());
+        tmp = tmp.substr(0, tmp.find('.') + 3);
+        row.push_back(tmp);
+        tmp = to_string((double)totalTurnaround / os.getProcessHistory().size());
+        tmp = tmp.substr(0, tmp.find('.') + 3);
+        row.push_back(tmp);
+        tmp = to_string((double)totalDelay / os.getProcessHistory().size());
+        tmp = tmp.substr(0, tmp.find('.') + 3);
+        row.push_back(tmp);
+        row.push_back("");
+        row.push_back("");
+        table.addRow(row);
+    }
+    
     fout << table.printTable("|") << endl;
 }

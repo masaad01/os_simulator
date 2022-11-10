@@ -10,16 +10,17 @@ using namespace std;
 class OperatingSystem
 {
     Scheduler scheduler;
-    int time = 0;
+    int *systemTimerPtr = nullptr;
     list<Process>  processHistory;
+    bool nullOS = true;
 
 public:
-    OperatingSystem(int time = 0);
+    OperatingSystem(int &time);
+    OperatingSystem();
     bool fork(Process ps);
     pair<int, Process> run();
     Process getProcess(string pid);
     bool hasReadyProcess();
-    void setTimer(int time);
     list<Process> getProcessHistory();
 };
 
