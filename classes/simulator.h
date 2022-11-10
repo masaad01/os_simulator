@@ -1,7 +1,11 @@
+#ifndef SIMULATOR_H
+#define SIMULATOR_H
+
 #include <vector>
 
 #include "table.h"
 #include "operatingSystem.h"
+#include "process.h"
 
 using namespace std;
 
@@ -20,3 +24,5 @@ public:
     string drawProcessRunning(Process ps, int size = 3, bool addInfo = false);
     void drawProcessTable(ofstream &fout);
 };
+
+#endif // SIMULATOR_H

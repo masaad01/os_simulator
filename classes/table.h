@@ -1,3 +1,9 @@
+#ifndef TABLE_H
+#define TABLE_H
+
+#include <vector>
+#include <string>
+
 using namespace std;
 
 class Table
@@ -22,3 +28,5 @@ public:
     int getColumnWidth(int column);
     string printTable(string delimiter = " ");
 };
+
+#endif // TABLE_H

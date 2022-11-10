@@ -1,3 +1,6 @@
+#ifndef PROCESS_H
+#define PROCESS_H
+
 #include <vector>
 #include <string>
 
@@ -51,3 +54,5 @@ public:
     static bool compareArrivalTime(Process p1, Process p2);
     static void sortByArrivaltime(vector<Process> &arr);
 };
+
+#endif // PROCESS_H

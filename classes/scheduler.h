@@ -1,8 +1,10 @@
+#ifndef SCHEDULER_H
+#define SCHEDULER_H
+
 #include <stack>
-// #include "process.h"
+#include "process.h"
 
 using namespace std;
-
 
 class Scheduler
 {
@@ -14,3 +16,5 @@ public:
     pair<int, Process> dispatch(int currentTime);
     bool hasReadyProcess();
 };
+
+#endif // SCHEDULER_H

@@ -1,3 +1,6 @@
+#ifndef OPERATINGSYSTEM_H
+#define OPERATINGSYSTEM_H
+
 #include <string>
 #include <list>
 
@@ -5,7 +8,6 @@
 #include "scheduler.h"
 
 using namespace std;
-
 
 class OperatingSystem
 {
@@ -24,3 +26,4 @@ public:
     list<Process> getProcessHistory();
 };
 
+#endif // OPERATINGSYSTEM_H
