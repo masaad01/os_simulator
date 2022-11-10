@@ -3,7 +3,7 @@
 input a group of processes and show order of execution using LIFO scheduler algorithm (algorithm may be changed)
     
 ## Usage:
-Run compiled main.exe, or compile file using command (g++ main.cpp ./classes/*.cpp -o main.exe) then run file.
+Compile file using command (g++ main.cpp ./classes/*.cpp -o main.exe) then run file.
 
 You may input processes manually in (in.txt) in the format(see next section),
 or choose to generate random processes.
