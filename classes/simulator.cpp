@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 #include "simulator.h"
 
@@ -74,7 +75,7 @@ void Simulator::forkNewProcess(){
 void Simulator::run(){
 
 
-    Process::sortByArrivaltime(inputProcesses);
+    sort(inputProcesses.begin(), inputProcesses.end(), Process::compareArrivalTime);
     
     time = inputProcesses[0].getArrivalTime();
 
@@ -176,7 +177,7 @@ string Simulator::drawProcessRunning(Process ps, int size, bool addInfo){
     res += string(rt * size, '#');
     res += "\n";
     
-    string name = ps.getPid();
+    string name = ps.getName();
     double namePadding = (rt * size - name.length()) / 2.0;
     
 
@@ -200,7 +201,7 @@ string Simulator::drawProcessRunning(Process ps, int size, bool addInfo){
 
     res += addInfo? at : "#";
     res += string(floor(namePadding), ' ');
-    res += ps.getPid();
+    res += ps.getName();
     res += string(ceil(namePadding), ' ');
     res += addInfo? pt : "#";
     res += "\n";
@@ -212,7 +213,7 @@ string Simulator::drawProcessRunning(Process ps, int size, bool addInfo){
 
 void Simulator::drawProcessTable(ofstream &fout){
     Table table;
-    table.addColumnHeader("PID");
+    table.addColumnHeader("Name");
     table.addColumnHeader("Arrival");
     table.addColumnHeader("Processing");
     table.addColumnHeader("Remaining");
@@ -233,7 +234,7 @@ void Simulator::drawProcessTable(ofstream &fout){
         totalResponse += ps.getResponseTime();
         totalTurnaround += ps.getTurnaroundTime();
         totalDelay += ps.getDelayTime();
-        row.push_back(ps.getPid());
+        row.push_back(ps.getName());
         row.push_back(to_string(ps.getArrivalTime()));
         row.push_back(to_string(ps.getProcessingTime()));
         row.push_back(to_string(ps.getRemainingTime()));

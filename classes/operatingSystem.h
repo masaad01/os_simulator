@@ -21,7 +21,7 @@ public:
     OperatingSystem();
     bool fork(Process ps);
     pair<int, Process> run();
-    Process getProcess(string pid);
+    Process getProcess(string name);
     bool hasReadyProcess();
     list<Process> getProcessHistory();
 };

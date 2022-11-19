@@ -1,25 +1,26 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 #include "process.h"
 
 using namespace std;
 
+int Process::pidCounter = 0;
 
 Process::Process() {
     nullProcess = true;
 }
-Process::Process(string pid, int arrivalTime, int processTime, int priority)
+Process::Process(string name, int arrivalTime, int processTime, int priority)
 {
-    set(pid, arrivalTime, processTime, priority);
+    set(name, arrivalTime, processTime, priority);
+    pid = pidCounter++;
 }
 
 // setters
-void Process::setPid(string n)
+void Process::setName(string n)
 {
-    pid = n;
+    name = n;
 }
 void Process::setArrivalTime(int at)
 {
@@ -42,9 +43,9 @@ void Process::setPriority(int p){
     priority = p;
 }
 
-void Process::set(string pid, int arrivalTime, int processTime, int priority)
+void Process::set(string name, int arrivalTime, int processTime, int priority)
 {
-    setPid(pid);
+    setName(name);
     setArrivalTime(arrivalTime);
     setProcessingTime(processTime);
     setPriority(priority);
@@ -52,12 +53,12 @@ void Process::set(string pid, int arrivalTime, int processTime, int priority)
 }
 
 // property getters
-string Process::getPid()
+string Process::getName()
 {
     if(!isAdmitted()){
         throw invalid_argument("Process is not admitted");
     }
-    return pid;
+    return name;
 }
 int Process::getArrivalTime()
 {
@@ -162,7 +163,7 @@ bool Process::isNullProcess(){
     return nullProcess;
 }
 bool Process::isAdmitted(){
-    return pid.length() > 0 && arrivalTime != -1 && processingTime != -1;
+    return name.length() > 0 && arrivalTime != -1 && processingTime != -1;
 }
 bool Process::isReady(){
         return isAdmitted() && remainingTime > 0;
@@ -176,12 +177,15 @@ string Process::getText()
     if(!isFinished()){
         throw invalid_argument("Process not finished yet.");
     }
-    return pid + ":(response=" + to_string(getResponseTime()) + ", turnaround=" + to_string(getTurnaroundTime()) + ", delay=" + to_string(getDelayTime()) + ")";
+    return name + ":(response=" + to_string(getResponseTime()) + ", turnaround=" + to_string(getTurnaroundTime()) + ", delay=" + to_string(getDelayTime()) + ")";
 }
 
 bool Process::compareArrivalTime(Process p1, Process p2){
     return p1.getArrivalTime() < p2.getArrivalTime();
 }
-void Process::sortByArrivaltime(vector<Process> &arr){
-    sort(arr.begin(), arr.end(), compareArrivalTime);
+bool Process::comparePriority(Process p1, Process p2){
+    return p1.getPriority() < p2.getPriority();
+}
+bool Process::comparePid(Process p1, Process p2){
+    return p1.pid < p2.pid;
 }

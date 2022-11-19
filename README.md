@@ -11,17 +11,17 @@ or choose to generate random processes.
 
 ## Input file format (in.txt):
 {number of processes}
-{pid 1} {arrival time 1} {processing time 1}
-{pid 2} {arrival time 2} {processing time 2}
+{name 1} {arrival time 1} {processing time 1}
+{name 2} {arrival time 2} {processing time 2}
 .
 .
 .
-{pid N} {arrival time N} {processing time N}
+{name N} {arrival time N} {processing time N}
 
 ## output files:
 1) out.txt:
 {order of execution}
-{pid}:(response time, turnaround time, delay time)
+{name}:(response time, turnaround time, delay time)
 
 2) table.txt:
 a table of all stats of processes

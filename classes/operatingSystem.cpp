@@ -41,13 +41,13 @@ pair<int, Process> OperatingSystem::run(){
     }
     return scheduler.dispatch(*systemTimerPtr);
 }
-Process OperatingSystem::getProcess(string pid){
+Process OperatingSystem::getProcess(string name){
     if(nullOS){
         throw invalid_argument("OperatingSystem is not initialized");
     }
     Process ps;
     for(auto &it : processHistory){
-        if(it.getPid() == pid){
+        if(it.getName() == name){
             ps = it;
             break;
         }

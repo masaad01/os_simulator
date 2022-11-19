@@ -55,13 +55,13 @@ int main()
 
     while (!fin.eof())
     {
-        string pid = "";
+        string name = "";
         int aTime = 0, pTime = 0;
-        fin >> pid >> aTime >> pTime;
+        fin >> name >> aTime >> pTime;
 
 
-        if(pid.length() > 0 && aTime >= 0 && pTime > 0){
-            Process ps = Process(pid, aTime, pTime);
+        if(name.length() > 0 && aTime >= 0 && pTime > 0){
+            Process ps = Process(name, aTime, pTime);
             simulator.addProcess(ps);
         }
 
@@ -77,7 +77,7 @@ int main()
     string output = "";
 
     for( auto &it : simulator.getProcessesTimeline()){
-        briefOutput += it.getPid();
+        briefOutput += it.getName();
         output += it.getText() + "\n";
     }
 
