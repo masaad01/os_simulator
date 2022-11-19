@@ -6,10 +6,7 @@
 
 using namespace std;
 
-
-LifoScheduler::LifoScheduler(){
-
-}
+// LifoScheduler
 void LifoScheduler::addReadyProcess(Process &ps)
 {
     readyProcessStack.push(&ps);
@@ -28,4 +25,25 @@ pair<int, Process> LifoScheduler::dispatch(int currentTime)
 bool LifoScheduler::hasReadyProcess()
 {
     return !readyProcessStack.empty();
+}
+
+// FifoScheduler
+void FifoScheduler::addReadyProcess(Process &ps)
+{
+    readyProcessQueue.push(&ps);
+}
+pair<int, Process> FifoScheduler::dispatch(int currentTime)
+{
+    if(readyProcessQueue.empty()){
+        return make_pair(currentTime, Process());
+    }
+    Process* ps = readyProcessQueue.front();
+    readyProcessQueue.pop();
+
+    int endTime = ps->run(currentTime);
+    return make_pair(endTime, *ps);
+}
+bool FifoScheduler::hasReadyProcess()
+{
+    return !readyProcessQueue.empty();
 }

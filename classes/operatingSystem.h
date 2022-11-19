@@ -16,7 +16,7 @@ class OperatingSystem
     list<Process>  processHistory;
 
 public:
-    OperatingSystem(int &time);
+    OperatingSystem(int &time, SchedulerType type = LIFO);
     ~OperatingSystem();
     bool fork(Process ps);
     pair<int, Process> run();
