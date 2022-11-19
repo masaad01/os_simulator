@@ -7,14 +7,14 @@
 using namespace std;
 
 
-Scheduler::Scheduler(){
+LifoScheduler::LifoScheduler(){
 
 }
-void Scheduler::addReadyProcess(Process &ps)
+void LifoScheduler::addReadyProcess(Process &ps)
 {
     readyProcessStack.push(&ps);
 }
-pair<int, Process> Scheduler::dispatch(int currentTime)
+pair<int, Process> LifoScheduler::dispatch(int currentTime)
 {
     if(readyProcessStack.empty()){
         return make_pair(currentTime, Process());
@@ -25,7 +25,7 @@ pair<int, Process> Scheduler::dispatch(int currentTime)
     int endTime = ps->run(currentTime);
     return make_pair(endTime, *ps);
 }
-bool Scheduler::hasReadyProcess()
+bool LifoScheduler::hasReadyProcess()
 {
     return !readyProcessStack.empty();
 }

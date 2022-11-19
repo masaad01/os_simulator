@@ -8,7 +8,7 @@ using namespace std;
 
 
 OperatingSystem::OperatingSystem(int &time){
-    scheduler = Scheduler();
+    scheduler = LifoScheduler();
     this->systemTimerPtr = &time;
     nullOS = false;
 }

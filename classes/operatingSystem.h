@@ -11,7 +11,7 @@ using namespace std;
 
 class OperatingSystem
 {
-    Scheduler scheduler;
+    LifoScheduler scheduler;
     int *systemTimerPtr = nullptr;
     list<Process>  processHistory;
     bool nullOS = true;
