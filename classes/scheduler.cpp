@@ -47,3 +47,14 @@ bool FifoScheduler::hasReadyProcess()
 {
     return !readyProcessQueue.empty();
 }
+
+// createScheduler
+Scheduler* createScheduler(SchedulerType type)
+{
+    if(type == LIFO)
+        return new LifoScheduler();
+    else if(type == FIFO)
+        return new FifoScheduler();
+    else
+        throw exception("Invalid scheduler type");
+}

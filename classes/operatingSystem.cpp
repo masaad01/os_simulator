@@ -9,12 +9,7 @@ using namespace std;
 
 OperatingSystem::OperatingSystem(int &time, SchedulerType type){
     systemTimerPtr = &time;
-    if(type == LIFO)
-        scheduler = new LifoScheduler();
-    else if(type == FIFO)
-        scheduler = new FifoScheduler();
-    else
-        throw exception("Invalid scheduler type");
+    scheduler = createScheduler(type);
 }
 OperatingSystem::~OperatingSystem(){
     delete scheduler;

@@ -37,4 +37,7 @@ public:
     pair<int, Process> dispatch(int currentTime);
     bool hasReadyProcess();
 };
+
+Scheduler* createScheduler(SchedulerType type);
+
 #endif // SCHEDULER_H
