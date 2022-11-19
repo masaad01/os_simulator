@@ -57,9 +57,6 @@ string drawRectangle(int width, int height, char symbol = '#'){
 }
 
 
-Simulator::Simulator(){
-    os = OperatingSystem(time);
-}
 void Simulator::addProcess(Process ps){
     inputProcesses.push_back(ps);
 }

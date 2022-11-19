@@ -8,18 +8,15 @@ using namespace std;
 
 
 OperatingSystem::OperatingSystem(int &time){
-    scheduler = LifoScheduler();
+    scheduler = new LifoScheduler();
     this->systemTimerPtr = &time;
-    nullOS = false;
 }
-OperatingSystem::OperatingSystem(){
-    nullOS = true;
+OperatingSystem::~OperatingSystem(){
+    delete scheduler;
+    scheduler = nullptr;
 }
 bool OperatingSystem::fork(Process ps)
 {
-    if(nullOS){
-        throw invalid_argument("OperatingSystem is not initialized");
-    }
     try
     {
         processHistory.push_back(ps);
@@ -28,23 +25,17 @@ bool OperatingSystem::fork(Process ps)
     {
         return false;
     }
-    scheduler.addReadyProcess(processHistory.back());
+    scheduler->addReadyProcess(processHistory.back());
 
     return true;
 }
 pair<int, Process> OperatingSystem::run(){
-    if(nullOS){
-        throw invalid_argument("OperatingSystem is not initialized");
-    }
     if(!hasReadyProcess()){
         return make_pair(*systemTimerPtr, Process());
     }
-    return scheduler.dispatch(*systemTimerPtr);
+    return scheduler->dispatch(*systemTimerPtr);
 }
 Process OperatingSystem::getProcess(string name){
-    if(nullOS){
-        throw invalid_argument("OperatingSystem is not initialized");
-    }
     Process ps;
     for(auto &it : processHistory){
         if(it.getName() == name){
@@ -55,14 +46,8 @@ Process OperatingSystem::getProcess(string name){
     return ps;
 }
 bool OperatingSystem::hasReadyProcess(){
-    if(nullOS){
-        throw invalid_argument("OperatingSystem is not initialized");
-    }
-    return scheduler.hasReadyProcess();
+    return scheduler->hasReadyProcess();
 }
 list<Process> OperatingSystem::getProcessHistory(){
-    if(nullOS){
-        throw invalid_argument("OperatingSystem is not initialized");
-    }
     return processHistory;
 }

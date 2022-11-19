@@ -11,14 +11,13 @@ using namespace std;
 
 class OperatingSystem
 {
-    LifoScheduler scheduler;
+    Scheduler *scheduler = nullptr;
     int *systemTimerPtr = nullptr;
     list<Process>  processHistory;
-    bool nullOS = true;
 
 public:
     OperatingSystem(int &time);
-    OperatingSystem();
+    ~OperatingSystem();
     bool fork(Process ps);
     pair<int, Process> run();
     Process getProcess(string name);

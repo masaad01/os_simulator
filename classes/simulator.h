@@ -15,7 +15,7 @@ class Simulator{
     vector<Process> processesTimeline;
     int time = 0;
 public:
-    Simulator();
+    Simulator() : os(time){};
     void addProcess(Process ps);
     void forkNewProcess();
     void run();

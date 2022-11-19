@@ -61,7 +61,7 @@ int main()
 
 
         if(name.length() > 0 && aTime >= 0 && pTime > 0){
-            Process ps = Process(name, aTime, pTime);
+            Process ps(name, aTime, pTime);
             simulator.addProcess(ps);
         }
 
