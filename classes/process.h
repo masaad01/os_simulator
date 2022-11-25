@@ -34,6 +34,7 @@ public:
     void set(string name, int arrivalTime, int processTime, int priority = 0);
     // property getters
     string getName();
+    int getPid();
     int getArrivalTime();
     int getProcessingTime();
     int getPriority();

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 #include <cmath>
 #include <algorithm>
 
@@ -56,7 +57,6 @@ string drawRectangle(int width, int height, char symbol = '#'){
     return res;
 }
 
-
 void Simulator::addProcess(Process ps){
     inputProcesses.push_back(ps);
 }
@@ -94,7 +94,29 @@ void Simulator::run(){
     }
 }
 vector<Process> Simulator::getProcessesTimeline(){
-    return processesTimeline;
+    vector<Process> res;
+    map<string, int> totalRunTime;
+    int time = 0;
+    for(int i = 0; i < processesTimeline.size(); i++){
+        Process *ps;
+        while(i < processesTimeline.size() - 1 && processesTimeline[i].getName() == processesTimeline[i + 1].getName()){
+            i++;
+        }
+        ps = &processesTimeline[i];
+        if(totalRunTime.find(ps->getName()) == totalRunTime.end()){
+            totalRunTime[ps->getName()] = 0;
+        }
+        int runTime = ps->getProcessingTime() - ps->getRemainingTime() - totalRunTime[ps->getName()];
+        totalRunTime[ps->getName()] = ps->getProcessingTime() - ps->getRemainingTime();
+
+        Process newPs;
+        newPs.set(ps->getName(), time, runTime, ps->getPriority());
+        newPs.run(time);
+        time += runTime;
+
+        res.push_back(newPs);
+    }
+    return res;
 }
 
 void Simulator::drawTimeLine(ofstream &fout){
@@ -117,7 +139,8 @@ void Simulator::drawTimeLine(ofstream &fout){
     string timeline = "0";
     int time = 0;
     int prevTimeSeperator = 0;
-    for(auto &ps : processesTimeline){
+    auto psTimeline = getProcessesTimeline();
+    for(auto &ps : psTimeline){
         vector<string> psRect;
         int runTime = ps.getProcessingTime() - ps.getRemainingTime();
         int runTimePadding = runTime * unit;

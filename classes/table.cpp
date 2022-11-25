@@ -123,7 +123,7 @@ string Table::printTable(string delimiter)
     string res = "";
     int numColumns = getNumColumns();
     int numRows = getNumRows();
-    int columnWidths[numColumns];
+    int* columnWidths = new int[numColumns];
     for (int i = 0; i < numColumns; i++)
     {
         columnWidths[i] = getColumnWidth(i);
@@ -175,5 +175,7 @@ string Table::printTable(string delimiter)
         }
         res += "\n";
     }
+    
+    delete[] columnWidths;
     return res;
 }

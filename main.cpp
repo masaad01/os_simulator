@@ -23,10 +23,10 @@ void randomProcessGenerator(ofstream &fout, int processCount, int maxArrivalTime
 int main()
 {
     int numOfProcesses = 0;
-    Simulator simulator = Simulator();
     
     ofstream fout;
     
+    // generate random processes if user want
     {
         cout << "Do you want to generate random processes? (y/n): ";
         char c = 'n';
@@ -47,6 +47,24 @@ int main()
         }
     }
 
+    // input scheduling type
+    SchedulerType type;
+    while (1)
+    {
+        string t;
+        cout << "Enter scheduling type : ";
+        cin >> t;
+        try{
+            type = getSchedulerType(t);
+            break;
+        }
+        catch(...){
+            cout << "Please enter a valid scheduling type ("<< getValidSchedulerTypes() << ")"<< endl;
+        }
+    }
+
+    Simulator simulator(type);
+    
     // getting input
     ifstream fin;
     fin.open("in.txt");
@@ -78,7 +96,10 @@ int main()
 
     for( auto &it : simulator.getProcessesTimeline()){
         briefOutput += it.getName();
-        output += it.getText() + "\n";
+        if(it.isFinished())
+            output += it.getText() + "\n"; 
+        else
+            cout << it.getName() << endl;
     }
 
 
@@ -103,5 +124,3 @@ int main()
 
     return 0;
 }
-
-

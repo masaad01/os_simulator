@@ -60,6 +60,13 @@ string Process::getName()
     }
     return name;
 }
+int Process::getPid()
+{
+    if(!isAdmitted()){
+        throw invalid_argument("Process is not admitted");
+    }
+    return pid;
+}
 int Process::getArrivalTime()
 {
     if(!isAdmitted()){
