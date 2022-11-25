@@ -71,8 +71,9 @@ class RRScheduler: public Scheduler
 {
     queue<Process*> readyProcessQueue;
     int quantum;
+    Process* lastRunningProcess;
 public:
-    RRScheduler(int quantum = 1): quantum(quantum){}
+    RRScheduler(int quantum = 1): quantum(quantum), lastRunningProcess(nullptr){}
     void setQuantum(int quantum){this->quantum = quantum;}
     int getQuantum(){return quantum;}
     void addReadyProcess(Process &ps);

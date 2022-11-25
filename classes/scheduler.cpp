@@ -101,6 +101,9 @@ void RRScheduler::addReadyProcess(Process &ps)
 }
 pair<int, Process> RRScheduler::dispatch(int currentTime)
 {
+    if(lastRunningProcess != nullptr){
+        readyProcessQueue.push(lastRunningProcess);
+    }
     if(readyProcessQueue.empty()){
         return make_pair(currentTime, Process());
     }
@@ -108,14 +111,17 @@ pair<int, Process> RRScheduler::dispatch(int currentTime)
     readyProcessQueue.pop();
 
     int endTime = ps->run(currentTime, currentTime + quantum);
-    if(!ps->isFinished()){
-        readyProcessQueue.push(ps);
+    if(ps->isFinished()){
+        lastRunningProcess = nullptr;
+    }
+    else{
+        lastRunningProcess = ps;
     }
     return make_pair(endTime, *ps);
 }
 bool RRScheduler::hasReadyProcess()
 {
-    return !readyProcessQueue.empty();
+    return !readyProcessQueue.empty() || lastRunningProcess != nullptr;
 }
 
 // createScheduler
